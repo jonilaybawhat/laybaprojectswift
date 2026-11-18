@@ -164,7 +164,6 @@ struct ReportsView: View {
         .padding(14)
         .background(Color.ffPanel)
         .cornerRadius(14)
-        .environment(\.colorScheme, .light)
     }
 
     func deltaText(_ percent: Double?, name: String) -> String? {

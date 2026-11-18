@@ -9,7 +9,6 @@ struct Card<Content: View>: View {
             .background(Color.ffPanel)
             .cornerRadius(16)
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.ffBorder, lineWidth: 1))
-            .environment(\.colorScheme, .light)   // cards stay white even in dark mode
     }
 }
 

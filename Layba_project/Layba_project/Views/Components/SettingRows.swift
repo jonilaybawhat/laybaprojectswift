@@ -1,6 +1,6 @@
 import SwiftUI
 
-// White group that holds setting rows
+// Group that holds setting rows (white in light mode, gray in dark mode)
 struct SettingGroup<Content: View>: View {
     @ViewBuilder var content: () -> Content
     var body: some View {
@@ -8,7 +8,6 @@ struct SettingGroup<Content: View>: View {
             .background(Color.ffPanel)
             .cornerRadius(16)
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.ffBorder, lineWidth: 1))
-            .environment(\.colorScheme, .light)
     }
 }
 

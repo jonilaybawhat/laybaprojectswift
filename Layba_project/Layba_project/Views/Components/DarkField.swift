@@ -1,6 +1,7 @@
 import SwiftUI
 
-// Labeled text field for forms that sit on the screen background (Login, Get Started, Settings)
+// Labeled text field for Login, Get Started and Settings forms
+// (white in light mode, gray in dark mode)
 struct DarkField: View {
     @EnvironmentObject var settings: SettingsStore
     let label: String
@@ -23,10 +24,9 @@ struct DarkField: View {
             .font(.ffBody(15))
             .foregroundColor(.ffInk)
             .padding(14)
-            .background(Color.white)
+            .background(Color.ffPanel)
             .cornerRadius(12)
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.ffBorder, lineWidth: 1))
-            .environment(\.colorScheme, .light)
         }
     }
 }

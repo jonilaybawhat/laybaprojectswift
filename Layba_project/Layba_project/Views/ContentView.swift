@@ -22,6 +22,7 @@ struct ContentView: View {
         // When someone logs in or out, load only that account's data
         .onChange(of: auth.accountID) { _, newID in
             appData.load(accountID: newID)
+            if settings.weeklySummary { appData.addWeeklySummaryIfNeeded() }
         }
         .environmentObject(appData)
         .environmentObject(auth)

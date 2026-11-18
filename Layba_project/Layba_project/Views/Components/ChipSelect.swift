@@ -11,7 +11,7 @@ struct ChipSelect<T: RawRepresentable & Hashable & CaseIterable>: View where T.R
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
                         .background(selection == option ? Color.ffInk : Color.ffPaper)
-                        .foregroundColor(selection == option ? .white : .ffInk)
+                        .foregroundColor(selection == option ? .ffPanel : .ffInk)
                         .cornerRadius(20)
                         .onTapGesture { selection = option }
                 }

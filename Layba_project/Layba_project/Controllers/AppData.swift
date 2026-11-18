@@ -2,13 +2,15 @@ import Foundation
 import Combine
 import SwiftData
 
-// Main data controller. Reads and writes the logged-in account's revenue and expenses in SwiftData.
+// Main data controller. Reads and writes the logged-in account's revenue, expenses
+// and notifications in SwiftData.
 final class AppData: ObservableObject {
     private let context: ModelContext
     private var accountID: String?      // the account that is logged in
 
     @Published private(set) var revenueEntries: [RevenueEntry] = []
     @Published private(set) var expenseEntries: [ExpenseEntry] = []
+    @Published private(set) var notifications: [AppNotification] = []
 
     init(context: ModelContext) {
         self.context = context
@@ -22,11 +24,12 @@ final class AppData: ObservableObject {
         reload()
     }
 
-    // Only fetch the entries that belong to the logged-in account
+    // Only fetch the data that belongs to the logged-in account
     private func reload() {
         guard let id = accountID else {
             revenueEntries = []
             expenseEntries = []
+            notifications = []
             return
         }
         let revenueQuery = FetchDescriptor<RevenueEntry>(
@@ -35,8 +38,12 @@ final class AppData: ObservableObject {
         let expenseQuery = FetchDescriptor<ExpenseEntry>(
             predicate: #Predicate<ExpenseEntry> { $0.accountID == id },
             sortBy: [SortDescriptor(\.date, order: .reverse)])
+        let notificationQuery = FetchDescriptor<AppNotification>(
+            predicate: #Predicate<AppNotification> { $0.accountID == id },
+            sortBy: [SortDescriptor(\.date, order: .reverse)])
         revenueEntries = (try? context.fetch(revenueQuery)) ?? []
         expenseEntries = (try? context.fetch(expenseQuery)) ?? []
+        notifications = (try? context.fetch(notificationQuery)) ?? []
     }
 
     func addRevenue(_ entry: RevenueEntry) {
@@ -53,6 +60,47 @@ final class AppData: ObservableObject {
         context.insert(entry)
         try? context.save()
         reload()
+    }
+
+    // MARK: Notifications
+
+    var unreadCount: Int { notifications.filter { !$0.isRead }.count }
+
+    func addNotification(kind: String, title: String, message: String, key: String = "") {
+        guard let id = accountID else { return }
+        context.insert(AppNotification(accountID: id, kind: kind, title: title, message: message, key: key))
+        try? context.save()
+        reload()
+    }
+
+    func markAllRead() {
+        guard unreadCount > 0 else { return }
+        notifications.forEach { $0.isRead = true }
+        try? context.save()
+        reload()
+    }
+
+    func clearNotifications() {
+        notifications.forEach { context.delete($0) }
+        try? context.save()
+        reload()
+    }
+
+    // Adds one "Weekly summary" notification per week (about last week's totals)
+    func addWeeklySummaryIfNeeded() {
+        guard accountID != nil else { return }
+        let thisWeek = reports.weekInterval(offset: 0)
+        let key = "weekly-\(Int(thisWeek.start.timeIntervalSince1970))"
+        guard !notifications.contains(where: { $0.key == key }) else { return }
+
+        let last = reports.total(reports.weekInterval(offset: -1))
+        let message: String
+        if last.revenue == 0 && last.expense == 0 {
+            message = "No entries last week."
+        } else {
+            message = "Last week: revenue \(Money.string(last.revenue)), expenses \(Money.string(last.expense)), net \(Money.string(last.net))."
+        }
+        addNotification(kind: "weekly", title: "Weekly summary", message: message, key: key)
     }
 
     // MARK: Reports

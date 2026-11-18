@@ -82,9 +82,16 @@ struct ExpenseView: View {
         let entry = ExpenseEntry(tripID: tripID, category: category, vendor: vendor, plate: plate,
                                  payMethod: payMethod, amount: amount, notes: notes, date: date)
         appData.addExpense(entry)
+
+        // Notification (only if turned on in Settings → Notifications)
         if settings.notifyNewExpense {
+            let where_ = vendor.isEmpty ? category.rawValue : "\(category.rawValue) · \(vendor)"
+            appData.addNotification(kind: "expense",
+                                    title: "New expense saved",
+                                    message: "\(where_) · \(Money.string(amount))")
             toast.show("New expense · \(category.rawValue) · \(Money.string(amount))")
         }
+
         tripID = ""; vendor = ""; amountText = ""; notes = ""; date = Date()
         payMethod = settings.defaultPayment
         saved = true

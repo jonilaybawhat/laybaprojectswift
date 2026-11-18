@@ -75,7 +75,6 @@ struct ChartsView: View {
                 .padding(12)
                 .background(Color.ffPanel)
                 .cornerRadius(12)
-                .environment(\.colorScheme, .light)
             }
         }
     }

@@ -15,7 +15,7 @@ struct TripSuggestionChips: View {
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background(selection == id ? Color.ffInk : Color.ffPaper)
-                            .foregroundColor(selection == id ? .white : .ffInk)
+                            .foregroundColor(selection == id ? .ffPanel : .ffInk)
                             .cornerRadius(16)
                             .onTapGesture { selection = id }
                     }

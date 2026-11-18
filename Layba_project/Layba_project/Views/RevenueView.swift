@@ -69,9 +69,15 @@ struct RevenueView: View {
         let entry = RevenueEntry(tripID: finalTripID, client: client, origin: origin, destination: destination,
                                  payMethod: payMethod, amount: amount, notes: notes, plate: "NGP 2049", date: date)
         appData.addRevenue(entry)
+
+        // Notification (only if turned on in Settings → Notifications)
         if settings.notifyNewRevenue {
+            appData.addNotification(kind: "revenue",
+                                    title: "New revenue saved",
+                                    message: "\(finalTripID) · \(client) · \(Money.string(amount))")
             toast.show("New revenue · \(finalTripID) · \(Money.string(amount))")
         }
+
         tripID = ""; client = ""; origin = ""; destination = ""; amountText = ""; notes = ""; date = Date()
         payMethod = settings.defaultPayment
         saved = true

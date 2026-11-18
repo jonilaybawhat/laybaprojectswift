@@ -31,6 +31,5 @@ struct HeroCard: View {
         .background(Color.ffPanel)
         .cornerRadius(20)
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.ffBorder, lineWidth: 1))
-        .environment(\.colorScheme, .light)
     }
 }

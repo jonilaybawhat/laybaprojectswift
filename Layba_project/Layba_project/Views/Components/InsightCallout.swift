@@ -11,7 +11,7 @@ struct InsightCallout: View {
             Spacer(minLength: 0)
         }
         .padding(14)
-        .background(Color(hex: "E3EAF0"))
+        .background(Color.ffInfoBg)
         .cornerRadius(16)
         .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.ffSteelBlue.opacity(0.25), lineWidth: 1))
     }
